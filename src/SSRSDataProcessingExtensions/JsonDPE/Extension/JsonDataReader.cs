@@ -28,12 +28,12 @@ namespace SSRSDataProcessingExtensions.JsonDPE.Extension
 
         public Type GetFieldType(int fieldIndex)
         {
-            return Type.GetType(_response.ColumnHeaders[fieldIndex].Type);
+            return Type.GetType(_response.ColumnHeaders.Single(x => x.Ordinal == fieldIndex).Type);
         }
 
         public string GetName(int fieldIndex)
         {
-            return _response.ColumnHeaders[fieldIndex].Name;
+            return _response.ColumnHeaders.Single(x=>x.Ordinal == fieldIndex).Name;
         }
 
         public int GetOrdinal(string fieldName)

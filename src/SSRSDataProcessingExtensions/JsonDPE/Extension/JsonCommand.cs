@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.ReportingServices.DataProcessing;
 using Newtonsoft.Json;
 using SSRSDataProcessingExtensions.JsonDPE.Client;
@@ -10,7 +11,6 @@ namespace SSRSDataProcessingExtensions.JsonDPE.Extension
         private readonly RestClient _restClient;
         private JsonDataParameterCollection _parameters;
         private string _commandText;
-        private RequestCommand _command;
         private int _timeout = 0;
 
         public JsonCommand(RestClient restClient)
@@ -24,8 +24,7 @@ namespace SSRSDataProcessingExtensions.JsonDPE.Extension
             get { return _commandText; }
             set
             {
-                _commandText = value;
-                _command = JsonConvert.DeserializeObject<RequestCommand>(value);    
+                _commandText = value;   
             }
         }
 
@@ -38,7 +37,7 @@ namespace SSRSDataProcessingExtensions.JsonDPE.Extension
         public CommandType CommandType
         {
             get { return CommandType.Text;}
-            set { if (value != CommandType.Text) throw new NotSupportedException("Only Text is supported."); }
+            set { if (value != CommandType.Text) throw new NotSupportedException(); }
         }
 
         public IDataParameterCollection Parameters
@@ -68,7 +67,7 @@ namespace SSRSDataProcessingExtensions.JsonDPE.Extension
 
         public IDataReader ExecuteReader(CommandBehavior behavior)
         {
-            return new JsonDataReader(_restClient.ExecuteRequest(_command));
+            return new JsonDataReader(_restClient.ExecuteRequest(_commandText, behavior.ToString(), _parameters));
         }
     }
 }
