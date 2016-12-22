@@ -4,9 +4,13 @@ using SSRSDataProcessingExtensions.JsonDPE.Client;
 
 namespace SSRSDataProcessingExtensions.JsonDPE.Extension
 {
-    public class JsonConnection : IDbConnection
+    public class JsonConnection : IDbConnectionExtension
     {
         private string _connectionString;
+        private string _user;
+        private string _password;
+        private bool _integratedSecurity;
+        private string _impersonate;
 
         public string ConnectionString
         {
@@ -19,9 +23,30 @@ namespace SSRSDataProcessingExtensions.JsonDPE.Extension
             get { return 0; }
         }
 
+        public string Impersonate
+        {
+            set { _impersonate = value; }
+        }
+
+        public bool IntegratedSecurity
+        {
+            get { return _integratedSecurity; }
+            set { _integratedSecurity = value; }
+        }
+
         public string LocalizedName
         {
             get { return "REST JSON"; }
+        }
+
+        public string Password
+        {
+            set { _password = value; }
+        }
+
+        public string UserName
+        {
+            set { _user = value; }
         }
 
         public IDbTransaction BeginTransaction()

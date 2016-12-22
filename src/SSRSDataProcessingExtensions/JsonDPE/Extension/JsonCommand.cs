@@ -47,13 +47,13 @@ namespace SSRSDataProcessingExtensions.JsonDPE.Extension
 
         public IDbTransaction Transaction
         {
-            get { throw new NotImplementedException(); }
-            set { throw new NotImplementedException(); }
+            get { throw new NotSupportedException(); }
+            set { throw new NotSupportedException(); }
         }
 
         public void Cancel()
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public IDataParameter CreateParameter()
