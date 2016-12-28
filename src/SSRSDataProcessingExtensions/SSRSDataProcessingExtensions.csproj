@@ -50,14 +50,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="JsonDPE\Client\RequestCommand.cs" />
-    <Compile Include="JsonDPE\Client\WebServiceResponse.cs" />
+    <Compile Include="JsonDPE\Client\WebServiceListResponse.cs" />
     <Compile Include="JsonDPE\Client\ResponseHeaderColumn.cs" />
     <Compile Include="JsonDPE\Client\RestClient.cs" />
     <Compile Include="JsonDPE\Extension\JsonCommand.cs" />
     <Compile Include="JsonDPE\Extension\JsonConnection.cs" />
     <Compile Include="JsonDPE\Extension\JsonDataParameter.cs" />
     <Compile Include="JsonDPE\Extension\JsonDataParameterCollection.cs" />
-    <Compile Include="JsonDPE\Extension\JsonDataReader.cs" />
+    <Compile Include="JsonDPE\Extension\JsonMapperDataReader.cs" />
+    <Compile Include="JsonDPE\Extension\JsonListDataReader.cs" />
     <Compile Include="JsonDPE\Extension\JsonTransaction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

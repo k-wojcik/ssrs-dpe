@@ -1,6 +1,6 @@
 ﻿namespace SSRSDataProcessingExtensions.JsonDPE.Client
 {
-    public class ResponseHeaderColumn
+    public class HeaderColumn
     {
          public string Name { get; set; }
          public int Ordinal { get; set; }

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using Microsoft.ReportingServices.DataProcessing;
 using Newtonsoft.Json;
@@ -15,12 +16,8 @@ namespace SSRSDataProcessingExtensions.JsonDPE.Client
             _baseUrl = baseUrl;
         }
 
-        public WebServiceResponse ExecuteRequest(string commandText, string requestType, JsonDataParameterCollection parameters)
+        public T ExecuteRequest<T>(RequestCommand request, string requestType)
         {
-            RequestCommand request = JsonConvert.DeserializeObject<RequestCommand>(ReplaceParameters(commandText, parameters));
-
-            var response = new WebServiceResponse();
-
             var webRequest = (HttpWebRequest)WebRequest.Create($"{_baseUrl}/{request.Path}");
             webRequest.ContentType = !string.IsNullOrEmpty(request.ContentType) ? request.ContentType : "application/json";
             webRequest.Accept = !string.IsNullOrEmpty(request.Accept) ? request.Accept : "application/json";
@@ -51,21 +48,8 @@ namespace SSRSDataProcessingExtensions.JsonDPE.Client
             using (var streamReader = new StreamReader(webResponse.GetResponseStream()))
             {
                 var responseText = streamReader.ReadToEnd();
-                response = JsonConvert.DeserializeObject<WebServiceResponse>(responseText);
+                return JsonConvert.DeserializeObject<T>(responseText);
             }
-
-            return response;
         }
-
-        private string ReplaceParameters(string command, JsonDataParameterCollection parameters)
-        {
-            foreach (IDataParameter parameter in parameters)
-            {
-                command = command.Replace(parameter.ParameterName, JsonConvert.SerializeObject(parameter.Value));
-            }
-
-            return command;
-        }
-
     }
 }

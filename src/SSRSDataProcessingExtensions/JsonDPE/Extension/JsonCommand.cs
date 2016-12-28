@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.ReportingServices.DataProcessing;
 using Newtonsoft.Json;
@@ -67,7 +68,25 @@ namespace SSRSDataProcessingExtensions.JsonDPE.Extension
 
         public IDataReader ExecuteReader(CommandBehavior behavior)
         {
-            return new JsonDataReader(_restClient.ExecuteRequest(_commandText, behavior.ToString(), _parameters));
+            RequestCommand request = JsonConvert.DeserializeObject<RequestCommand>(ReplaceParameters(_commandText, _parameters));
+            if (request.PropertyMap != null)
+            {
+                return new JsonListDataReader(_restClient.ExecuteRequest<WebServiceListResponse>(request, behavior.ToString()));
+            }
+            else
+            {
+                return new JsonMapperDataReader(request, _restClient.ExecuteRequest<List<object>>(request, behavior.ToString()));
+            }   
+        }
+
+        private string ReplaceParameters(string command, JsonDataParameterCollection parameters)
+        {
+            foreach (IDataParameter parameter in parameters)
+            {
+                command = command.Replace(parameter.ParameterName, JsonConvert.SerializeObject(parameter.Value));
+            }
+
+            return command;
         }
     }
 }

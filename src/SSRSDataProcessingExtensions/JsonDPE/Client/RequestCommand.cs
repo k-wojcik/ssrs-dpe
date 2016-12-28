@@ -13,5 +13,7 @@ namespace SSRSDataProcessingExtensions.JsonDPE.Client
         public Dictionary<string, string> HttpHeader { get; set; }
 
         public object Payload { get; set; }
+
+        public List<HeaderColumn> ColumnHeaders { get; set; }
     }
 }
