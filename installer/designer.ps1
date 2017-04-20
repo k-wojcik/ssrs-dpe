@@ -1,6 +1,6 @@
 $binFolder = "..\src\SSRSDataProcessingExtensions\bin\Release"
 
-$PrivateAssembliesFolder = "C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\PrivateAssemblies\"
+$PrivateAssembliesFolder = "D:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\PrivateAssemblies\"
 $RSDesignerConfig = Join-Path $PrivateAssembliesFolder RSReportDesigner.config
 $RSPreviewPolicy = Join-Path $PrivateAssembliesFolder RSPreviewPolicy.config
 
@@ -12,28 +12,40 @@ if(Test-path $RSDesignerConfig)
 	$RSDesignerConfigXml = [xml] (Get-Content $RSDesignerConfig) 
 	$rootReporting = $RSDesignerConfigXml.Configuration.Extensions.Data;
 
+	Write-Host "Creating backup RSReportDesigner.config file" -NoNewline
+	Copy-Item $RSDesignerConfig ($RSDesignerConfig + ".bak")
+	Write-Host "Done" -ForegroundColor Green
+
 	if($rootReporting.Extension | Where-Object {$_.Name -eq "REST_JSON"})
     {		
-		Write-Host "DPE REST_JSON already added to the RSReportDesigner.config" -ForegroundColor Green	
+		Write-Host "DPE REST_JSON already added to the Extension RSReportDesigner.config" -ForegroundColor Green	
 	}
 	else
 	{	
-		Write-Host "Creating backup RSReportDesigner.config file" -NoNewline
-		Copy-Item $RSDesignerConfig ($RSDesignerConfig + ".bak")
-		Write-Host "Done" -ForegroundColor Green
-	
 		$dpe = $RSDesignerConfigXml.CreateElement("Extension");
 		$dpe.SetAttribute("Name","REST_JSON")
 		$dpe.SetAttribute("Type","SSRSDataProcessingExtensions.JsonDPE.Extension.JsonConnection, SSRSDataProcessingExtensions")
 		[Void]$rootReporting.AppendChild($dpe);
 		
-		$dpe2 = $RSDesignerConfigXml.CreateElement("Designer");
+		$RSDesignerConfigXml.Save($RSDesignerConfig);	
+        Write-Host "DPE REST_JSON added into Extension RSReportDesigner.config" -ForegroundColor Green
+	}
+	
+	$rootReporting = $RSDesignerConfigXml.Configuration.Extensions.Designer;
+
+	if($rootReporting.Extension | Where-Object {$_.Name -eq "REST_JSON"})
+    {		
+		Write-Host "DPE REST_JSON already added to the Designer RSReportDesigner.config" -ForegroundColor Green	
+	}
+	else
+	{	
+		$dpe2 = $RSDesignerConfigXml.CreateElement("Extension");
 		$dpe2.SetAttribute("Name","REST_JSON")
 		$dpe2.SetAttribute("Type","Microsoft.ReportingServices.QueryDesigners.GenericQueryDesigner, Microsoft.ReportingServices.QueryDesigners")
 		[Void]$rootReporting.AppendChild($dpe2);
 				
 		$RSDesignerConfigXml.Save($RSDesignerConfig);	
-        Write-Host "DPE REST_JSON added into RSReportDesigner.config" -ForegroundColor Green
+        Write-Host "DPE REST_JSON added into Designer RSReportDesigner.config" -ForegroundColor Green
 	}
 }
 else
